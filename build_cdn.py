@@ -42,8 +42,8 @@ def build():
     js = f"""/*!
  * Alfamart Design Assets CDN v1.0.0
  * Usage: <i class="alfa-icon" data-icon="ICON_NAME"></i>
- * Size customization via data-size attribute (default: 24)
- * Color customization via CSS color property
+ * Size: via CSS font-size (e.g. style="font-size: 32px")
+ * Color: via CSS color (e.g. style="color: red")
  */
 (function () {{
   'use strict';
@@ -60,10 +60,13 @@ def build():
       '  align-items: center;',
       '  justify-content: center;',
       '  vertical-align: middle;',
+      '  font-size: inherit;',
       '  line-height: 1;',
       '}}',
       '.alfa-icon svg {{',
       '  display: block;',
+      '  width: 1em;',
+      '  height: 1em;',
       '}}',
       '.alfa-icon svg path, .alfa-icon svg rect, .alfa-icon svg circle, .alfa-icon svg polygon, .alfa-icon svg ellipse {{',
       '  fill: currentColor;',
@@ -74,15 +77,14 @@ def build():
 
   function renderIcon(el) {{
     var name = el.getAttribute('data-icon');
-    var size = el.getAttribute('data-size') || '24';
     if (!name || !icons[name]) {{
       el.innerHTML = '';
       return;
     }}
     var svg = icons[name];
-    // Override width/height/fill supaya bisa dikontrol via CSS
-    svg = svg.replace(/width="[^"]*"/, 'width="' + size + '"');
-    svg = svg.replace(/height="[^"]*"/, 'height="' + size + '"');
+    // Pakai 1em supaya size inherit dari CSS font-size
+    svg = svg.replace(/width="[^"]*"/, 'width="1em"');
+    svg = svg.replace(/height="[^"]*"/, 'height="1em"');
     svg = svg.replace(/fill="(?!none)[^"]*"/g, 'fill="currentColor"');
     el.innerHTML = svg;
   }}
@@ -175,7 +177,7 @@ def build():
     print(f'  <script src="https://cdn.jsdelivr.net/gh/DavinIntern/assets-library-website@1.0.0/dist/assets.js"></script>')
     print(f"\nUsage:")
     print(f'  <i class="alfa-icon" data-icon="mdi_check"></i>')
-    print(f'  <i class="alfa-icon" data-icon="mdi_check" data-size="32" style="color: red;"></i>')
+    print(f'  <i class="alfa-icon" data-icon="mdi_check" style="font-size: 32px; color: red;"></i>')
 
 if __name__ == "__main__":
     build()

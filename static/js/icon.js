@@ -135,11 +135,30 @@ document.addEventListener('DOMContentLoaded', function () {
     container.appendChild(next);
   }
 
+  function getIconsPerRow() {
+    if (!iconGrid) return 1;
+    const gridWidth = iconGrid.offsetWidth;
+    const minItemWidth = 72 + 24; // minmax(72px) + gap(24px ~= gap-6)
+    return Math.max(1, Math.floor((gridWidth + 24) / minItemWidth));
+  }
+
+  function getPageSlice(page) {
+    const iconsPerRow = getIconsPerRow();
+    const start = (page - 1) * ICONS_PER_PAGE;
+    // Base slice
+    let end = start + ICONS_PER_PAGE;
+    // Extend to fill the last row: find how many icons needed to complete it
+    const count = Math.min(end, currentIconData.length) - start;
+    const remainder = count % iconsPerRow;
+    if (remainder !== 0 && end < currentIconData.length) {
+      end += iconsPerRow - remainder;
+    }
+    return currentIconData.slice(start, end);
+  }
+
   function goToIconPage(page) {
     currentIconPage = page;
-    const start = (page - 1) * ICONS_PER_PAGE;
-    const pageData = currentIconData.slice(start, start + ICONS_PER_PAGE);
-    _renderIconCards(pageData);
+    _renderIconCards(getPageSlice(page));
     renderPagination(currentIconData.length, ICONS_PER_PAGE, currentIconPage, goToIconPage);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -147,8 +166,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function renderIcons(data) {
     currentIconData = data;
     currentIconPage = 1;
-    const pageData = data.slice(0, ICONS_PER_PAGE);
-    _renderIconCards(pageData);
+    _renderIconCards(getPageSlice(1));
     renderPagination(data.length, ICONS_PER_PAGE, currentIconPage, goToIconPage);
   }
 
@@ -164,81 +182,13 @@ document.addEventListener('DOMContentLoaded', function () {
       box.className = 'icon-box relative flex justify-center items-center p-4 rounded-xl hover:bg-gray-50 cursor-pointer group';
       box.innerHTML = `
         <div class="icon-img" style="-webkit-mask-image:url('${ICON_BASE_URL}${fileName}');mask-image:url('${ICON_BASE_URL}${fileName}');"></div>
-        <div class="icon-actions bg-white rounded-lg shadow-md p-1 flex flex-col gap-1 z-10">
-          <button class="copy-btn w-7 h-7 flex items-center justify-center bg-gray-100 rounded hover:bg-gray-200 text-gray-700 text-xs transition" title="Copy SVG Code">
-            <i class="fa-solid fa-code"></i>
-          </button>
-          <div class="relative">
-            <button class="download-btn w-7 h-7 flex items-center justify-center bg-alfa-blue rounded hover:bg-blue-800 text-white text-xs transition" title="Download">
-              <i class="fa-solid fa-download"></i>
-            </button>
-            <div class="download-dropdown absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-lg p-2 w-28 flex-col gap-1.5 shadow-lg z-20">
-              <span class="text-[11px] font-semibold text-gray-700 text-center block mb-1">Download asset</span>
-              <button class="btn-format w-full bg-alfa-blue text-white text-xs font-semibold py-1.5 rounded hover:bg-blue-800 transition" data-format="svg">SVG</button>
-              <button class="btn-format w-full bg-alfa-blue text-white text-xs font-semibold py-1.5 rounded hover:bg-blue-800 transition" data-format="png">PNG</button>
-            </div>
-          </div>
-        </div>
       `;
 
-      // Download dropdown toggle
-      const dlBtn = box.querySelector('.download-btn');
-      const dlDrop = box.querySelector('.download-dropdown');
-      dlBtn.addEventListener('click', e => {
-        e.stopPropagation();
-        document.querySelectorAll('.download-dropdown.show').forEach(el => { if (el !== dlDrop) el.classList.remove('show'); });
-        dlDrop.classList.toggle('show');
-      });
-
-      // Format buttons (SVG / PNG)
-      box.querySelectorAll('.btn-format').forEach(btn => {
-        btn.addEventListener('click', async e => {
-          e.stopPropagation();
-          dlDrop.classList.remove('show');
-          const format = btn.getAttribute('data-format');
-          const color = getComputedStyle(document.documentElement).getPropertyValue('--icon-color').trim() || '#000000';
-          try {
-            const res = await fetch(`${ICON_BASE_URL}${fileName}`);
-            const svgText = await res.text();
-            const svgEl = new DOMParser().parseFromString(svgText, 'image/svg+xml').documentElement;
-            svgEl.setAttribute('fill', color);
-            svgEl.querySelectorAll('*').forEach(el => {
-              if (el.getAttribute('fill') && el.getAttribute('fill') !== 'none') el.setAttribute('fill', color);
-              if (el.getAttribute('stroke') && el.getAttribute('stroke') !== 'none') el.setAttribute('stroke', color);
-            });
-            svgEl.setAttribute('width', '512'); svgEl.setAttribute('height', '512');
-            const newSvg = new XMLSerializer().serializeToString(svgEl);
-            if (format === 'svg') {
-              const url = URL.createObjectURL(new Blob([newSvg], { type: 'image/svg+xml' }));
-              triggerDownload(url, fileName);
-              URL.revokeObjectURL(url);
-            } else {
-              const canvas = document.createElement('canvas');
-              canvas.width = 512; canvas.height = 512;
-              const img = new Image();
-              img.onload = () => {
-                canvas.getContext('2d').drawImage(img, 0, 0, 512, 512);
-                triggerDownload(canvas.toDataURL('image/png'), fileName.replace('.svg', '.png'));
-              };
-              img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(newSvg)));
-            }
-            showSuccessModal();
-          } catch (err) { console.error(err); }
-        });
-      });
-
-      // Copy SVG
-      box.querySelector('.copy-btn').addEventListener('click', async e => {
-        e.stopPropagation();
-        try {
-          const color = getComputedStyle(document.documentElement).getPropertyValue('--icon-color').trim() || '#000000';
-          const res = await fetch(`${ICON_BASE_URL}${fileName}`);
-          const svgText = await res.text();
-          const svgEl = new DOMParser().parseFromString(svgText, 'image/svg+xml').documentElement;
-          svgEl.setAttribute('fill', color);
-          await navigator.clipboard.writeText(new XMLSerializer().serializeToString(svgEl));
-          showToast(e.currentTarget, 'SVG Code copied!');
-        } catch (err) { console.error(err); }
+      // Show usage panel on icon click
+      box.addEventListener('click', () => {
+        const baseName = fileName.replace('.svg', '');
+        const cssClass = baseName.replace(/_/g, '-').toLowerCase();
+        showUsagePanel(baseName, cssClass, `${ICON_BASE_URL}${fileName}`, box);
       });
 
       iconGrid.appendChild(box);
@@ -259,14 +209,26 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!toast) return;
     clearTimeout(toastTimeout);
     toast.querySelector('span').textContent = msg;
+
+    // Use fixed positioning — rect coords are already viewport-relative
     const rect = btn.getBoundingClientRect();
-    toast.style.left = `${rect.left + rect.width / 2 - 80}px`;
-    toast.style.top = `${rect.top + window.scrollY - 44}px`;
+    const toastWidth = 150;
+    let left = rect.left + rect.width / 2 - toastWidth / 2;
+    left = Math.max(8, Math.min(left, window.innerWidth - toastWidth - 8));
+
+    // Show above button; if too close to top, show below instead
+    const spaceAbove = rect.top;
+    const topPos = spaceAbove > 50 ? rect.top - 40 : rect.bottom + 8;
+
+    toast.style.width = toastWidth + 'px';
+    toast.style.left = left + 'px';
+    toast.style.top = topPos + 'px';
     toast.style.opacity = '1';
     toast.style.transform = 'translateY(0)';
+
     toastTimeout = setTimeout(() => {
       toast.style.opacity = '0';
-      toast.style.transform = 'translateY(8px)';
+      toast.style.transform = 'translateY(-6px)';
     }, 2000);
   }
 
@@ -549,6 +511,102 @@ document.addEventListener('DOMContentLoaded', function () {
     if (colorPickerPopup && !colorPickerBtn.contains(e.target) && !colorPickerPopup.contains(e.target)) {
       colorPickerPopup.classList.remove('open');
     }
+  });
+
+  // ==========================================
+  // USAGE PANEL (inline, Icons8-style)
+  // ==========================================
+  let activeBox = null;
+
+  function getRowLastBox(clickedBox) {
+    // Cari semua icon boxes, kelompokkan berdasarkan offsetTop
+    const boxes = Array.from(iconGrid.querySelectorAll('.icon-box'));
+    const clickedTop = clickedBox.offsetTop;
+    // Cari box terakhir yang punya offsetTop sama (satu baris)
+    const sameRow = boxes.filter(b => b.offsetTop === clickedTop);
+    return sameRow[sameRow.length - 1];
+  }
+
+  function showUsagePanel(baseName, cssClass, iconUrl, clickedBox) {
+    const template = document.getElementById('usagePanelTemplate');
+    if (!template) return;
+
+    // Hapus panel lama jika ada
+    const existing = document.getElementById('usagePanel');
+    if (existing) existing.remove();
+
+    // Clone panel dari template
+    const panel = template.content.cloneNode(true).firstElementChild;
+
+    // Isi konten
+    const jsSnippet = `<i class="alfa-icon" data-icon="${baseName}" style="font-size: 24px;"></i>`;
+    const cssSnippet = `<i class="alfa ${cssClass}"></i>`;
+
+    panel.querySelector('#usagePanelIcon').style.cssText =
+      `-webkit-mask-image:url('${iconUrl}');mask-image:url('${iconUrl}');` +
+      `width:40px;height:40px;background-color:var(--icon-color,#000);` +
+      `-webkit-mask-size:contain;mask-size:contain;` +
+      `-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;` +
+      `-webkit-mask-position:center;mask-position:center;display:inline-block;`;
+    panel.querySelector('#usagePanelName').textContent = baseName;
+    panel.querySelector('#snippetCSS').textContent = cssSnippet;
+    panel.querySelector('#snippetJS').textContent = jsSnippet;
+
+    // Highlight icon aktif
+    if (activeBox) activeBox.classList.remove('ring-2', 'ring-alfa-blue', 'ring-offset-1', 'rounded-xl');
+    clickedBox.classList.add('ring-2', 'ring-alfa-blue', 'ring-offset-1', 'rounded-xl');
+    activeBox = clickedBox;
+
+    // Insert panel setelah baris terakhir dari baris yang diklik
+    const lastInRow = getRowLastBox(clickedBox);
+    lastInRow.after(panel);
+
+    // Scroll panel ke view
+    document.getElementById('usagePanel')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    // Close button
+    document.getElementById('closePanelBtn').addEventListener('click', () => {
+      document.getElementById('usagePanel')?.remove();
+      if (activeBox) activeBox.classList.remove('ring-2', 'ring-alfa-blue', 'ring-offset-1', 'rounded-xl');
+      activeBox = null;
+    });
+
+    // Download PNG button
+    document.getElementById('downloadPngBtn').addEventListener('click', async () => {
+      const color = getComputedStyle(document.documentElement).getPropertyValue('--icon-color').trim() || '#000000';
+      try {
+        const res = await fetch(iconUrl);
+        const svgText = await res.text();
+        const svgEl = new DOMParser().parseFromString(svgText, 'image/svg+xml').documentElement;
+        svgEl.setAttribute('width', '512');
+        svgEl.setAttribute('height', '512');
+        svgEl.querySelectorAll('*').forEach(el => {
+          if (el.getAttribute('fill') && el.getAttribute('fill') !== 'none') el.setAttribute('fill', color);
+          if (el.getAttribute('stroke') && el.getAttribute('stroke') !== 'none') el.setAttribute('stroke', color);
+        });
+        svgEl.setAttribute('fill', color);
+        const svgStr = new XMLSerializer().serializeToString(svgEl);
+        const canvas = document.createElement('canvas');
+        canvas.width = 512; canvas.height = 512;
+        const img = new Image();
+        img.onload = () => {
+          canvas.getContext('2d').drawImage(img, 0, 0, 512, 512);
+          triggerDownload(canvas.toDataURL('image/png'), baseName + '.png');
+          showSuccessModal();
+        };
+        img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgStr)));
+      } catch (err) { console.error(err); }
+    });
+  }
+
+  // Copy buttons inside panel (delegated)
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('[data-copy-target]');
+    if (!btn) return;
+    const targetId = btn.getAttribute('data-copy-target');
+    const text = document.getElementById(targetId)?.textContent;
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => showToast(btn, 'Copied!'));
   });
 
   // ==========================================

@@ -1,8 +1,8 @@
 /*!
  * Alfamart Design Assets CDN v1.0.0
  * Usage: <i class="alfa-icon" data-icon="ICON_NAME"></i>
- * Size customization via data-size attribute (default: 24)
- * Color customization via CSS color property
+ * Size: via CSS font-size (e.g. style="font-size: 32px")
+ * Color: via CSS color (e.g. style="color: red")
  */
 (function () {
   'use strict';
@@ -19,10 +19,13 @@
       '  align-items: center;',
       '  justify-content: center;',
       '  vertical-align: middle;',
+      '  font-size: inherit;',
       '  line-height: 1;',
       '}',
       '.alfa-icon svg {',
       '  display: block;',
+      '  width: 1em;',
+      '  height: 1em;',
       '}',
       '.alfa-icon svg path, .alfa-icon svg rect, .alfa-icon svg circle, .alfa-icon svg polygon, .alfa-icon svg ellipse {',
       '  fill: currentColor;',
@@ -33,15 +36,14 @@
 
   function renderIcon(el) {
     var name = el.getAttribute('data-icon');
-    var size = el.getAttribute('data-size') || '24';
     if (!name || !icons[name]) {
       el.innerHTML = '';
       return;
     }
     var svg = icons[name];
-    // Override width/height/fill supaya bisa dikontrol via CSS
-    svg = svg.replace(/width="[^"]*"/, 'width="' + size + '"');
-    svg = svg.replace(/height="[^"]*"/, 'height="' + size + '"');
+    // Pakai 1em supaya size inherit dari CSS font-size
+    svg = svg.replace(/width="[^"]*"/, 'width="1em"');
+    svg = svg.replace(/height="[^"]*"/, 'height="1em"');
     svg = svg.replace(/fill="(?!none)[^"]*"/g, 'fill="currentColor"');
     el.innerHTML = svg;
   }

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Alfamart Design Assets{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'alfa-red': '#E31837',
+            'alfa-blue': '#0056b3',
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    :root { --icon-color: #000000; }
+  </style>
+  {% block head %}{% endblock %}
+</head>
+<body class="bg-white text-gray-900">
+
+  <!-- NAVBAR -->
+  <nav class="flex justify-between items-center px-8 h-[73px] border-b border-gray-200 sticky top-0 bg-white z-50">
+    <div class="flex items-center gap-10">
+      <a href="{{ url_for('home') }}">
+        <img src="{{ url_for('static', filename='assets/Alfamart.webp') }}" alt="Alfamart Logo" class="h-9">
+      </a>
+      <div class="flex gap-6 text-sm font-medium">
+        <a href="{{ url_for('icon') }}"
+          class="{% if request.endpoint == 'icon' %}text-alfa-red font-semibold{% else %}text-gray-500 hover:text-gray-900{% endif %} transition-colors">Icons</a>
+        <a href="{{ url_for('illustration') }}"
+          class="{% if request.endpoint == 'illustration' %}text-alfa-red font-semibold{% else %}text-gray-500 hover:text-gray-900{% endif %} transition-colors">Illustrations</a>
+        <a href="{{ url_for('lottie') }}"
+          class="{% if request.endpoint == 'lottie' %}text-alfa-red font-semibold{% else %}text-gray-500 hover:text-gray-900{% endif %} transition-colors">Lottie</a>
+        <a href="{{ url_for('template') }}"
+          class="{% if request.endpoint in ['template', 'template_webapps', 'template_detail'] %}text-alfa-red font-semibold{% else %}text-gray-500 hover:text-gray-900{% endif %} transition-colors">Templates</a>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      {% block navbar_extras %}{% endblock %}
+
+      <a href="{{ url_for('logout') }}"
+        class="text-sm font-medium text-alfa-red border border-alfa-red px-4 py-2 rounded-md hover:bg-alfa-red hover:text-white transition-all whitespace-nowrap">
+        Sign Out &rarr;
+      </a>
+      <img src="{{ url_for('static', filename='assets/profilepict.png') }}" alt="User"
+        class="w-9 h-9 rounded-full object-cover cursor-pointer border border-gray-200">
+    </div>
+  </nav>
+
+  {% block content %}{% endblock %}
+
+  {% block footer %}
+  <footer class="bg-alfa-red text-white px-8 h-[73px] flex justify-between items-center text-sm">
+    <img src="{{ url_for('static', filename='assets/alfamart_white.svg') }}" alt="Alfamart" class="h-7 brightness-0 invert">
+    <div class="flex gap-6">
+      <a href="#" class="hover:underline">License Agreement</a>
+      <a href="#" class="hover:underline">FAQ</a>
+      <a href="#" class="hover:underline">Company</a>
+    </div>
+    <p>&copy; Alfamart, Inc. 2026</p>
+  </footer>
+  {% endblock %}
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

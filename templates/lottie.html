@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% block title %}Alfamart Asset Library - Lottie{% endblock %}
+
+{% block head %}
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+<style>
+  .version-menu { display: none; }
+  .version-menu.active { display: block; }
+  .category-item.active { font-weight: 600; color: #111827; }
+  .sidebar-transition { transition: width 0.3s ease; }
+  .modal-overlay { display: none; }
+  .modal-overlay.show { display: flex; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="flex" style="min-height: calc(100vh - 73px);">
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar"
+    class="sidebar-transition w-[220px] shrink-0 bg-white border-r border-gray-200 sticky top-[73px] self-start overflow-y-auto"
+    style="height: calc(100vh - 73px);">
+
+    <div id="sidebarHeader" class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+      <div class="flex items-center gap-2 text-sm font-semibold text-gray-800">
+        <i class="fa-solid fa-film text-gray-600"></i>
+        <span>Lottie Packs</span>
+      </div>
+      <button id="closeSidebarBtn" class="text-gray-400 hover:text-gray-700 transition p-1 rounded hover:bg-gray-100">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+      </button>
+    </div>
+
+    <div id="sidebarHeaderCollapsed" class="hidden flex-col items-center py-4">
+      <button id="openSidebarBtn" class="text-gray-500 hover:text-gray-800 transition p-2 rounded hover:bg-gray-100">
+        <i class="fa-solid fa-film text-lg"></i>
+      </button>
+    </div>
+
+    <ul id="categoryList" class="py-3 px-3 flex flex-col gap-0.5">
+      <li class="category-item px-3 py-2 text-sm text-gray-500 rounded-md cursor-pointer hover:bg-gray-50 hover:text-gray-900 transition" data-category="Corporate Affair">Corporate Affair</li>
+      <li class="category-item px-3 py-2 text-sm text-gray-500 rounded-md cursor-pointer hover:bg-gray-50 hover:text-gray-900 transition" data-category="Finance & Corporate Secretary">Finance & Corporate Secretary</li>
+      <li class="category-item px-3 py-2 text-sm text-gray-500 rounded-md cursor-pointer hover:bg-gray-50 hover:text-gray-900 transition" data-category="Franchise & Investor Relation">Franchise & Investor Relation</li>
+      <li class="category-item px-3 py-2 text-sm text-gray-500 rounded-md cursor-pointer hover:bg-gray-50 hover:text-gray-900 transition" data-category="Human Capital">Human Capital</li>
+      <li class="category-item px-3 py-2 text-sm text-gray-500 rounded-md cursor-pointer hover:bg-gray-50 hover:text-gray-900 transition" data-category="Information Technology">Information Technology</li>
+      <li class="category-item px-3 py-2 text-sm text-gray-500 rounded-md cursor-pointer hover:bg-gray-50 hover:text-gray-900 transition" data-category="Logistic">Logistic</li>
+      <li class="category-item px-3 py-2 text-sm text-gray-500 rounded-md cursor-pointer hover:bg-gray-50 hover:text-gray-900 transition" data-category="Marketing">Marketing</li>
+      <li class="category-item px-3 py-2 text-sm text-gray-500 rounded-md cursor-pointer hover:bg-gray-50 hover:text-gray-900 transition" data-category="Merchandising">Merchandising</li>
+      <li class="category-item px-3 py-2 text-sm text-gray-500 rounded-md cursor-pointer hover:bg-gray-50 hover:text-gray-900 transition" data-category="Operation">Operation</li>
+      <li class="category-item px-3 py-2 text-sm text-gray-500 rounded-md cursor-pointer hover:bg-gray-50 hover:text-gray-900 transition" data-category="Procurement">Procurement</li>
+      <li class="category-item px-3 py-2 text-sm text-gray-500 rounded-md cursor-pointer hover:bg-gray-50 hover:text-gray-900 transition" data-category="Property & SMB Development">Property & SMB Development</li>
+    </ul>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 px-8 py-8">
+    <div class="relative mb-8">
+      <svg class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none"
+        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input id="searchBar" type="text" placeholder="Search lottie animations"
+        value="{{ search }}"
+        class="w-full pl-11 pr-5 py-3 border border-gray-200 rounded-full text-sm outline-none focus:border-gray-400 bg-white transition">
+    </div>
+
+    <div class="flex items-center justify-between mb-8">
+      <div class="flex items-center gap-3">
+        <h1 id="pageTitle" class="text-lg font-semibold text-gray-900">Result for Lottie Animation</h1>
+        <button id="btnReset" class="hidden text-xs px-3 py-1.5 border border-gray-300 rounded-full text-gray-600 hover:bg-gray-50 transition">Reset</button>
+      </div>
+      <div class="relative">
+        <button id="versionBtn" class="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-sm bg-white hover:bg-gray-50 transition text-gray-700">
+          1.1.1
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div id="versionMenu" class="version-menu absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-md z-10 min-w-full">
+          <div class="px-4 py-2.5 text-sm cursor-pointer hover:bg-gray-50 border-b border-gray-100 text-gray-700">1.1.1</div>
+          <div class="px-4 py-2.5 text-sm cursor-pointer hover:bg-gray-50 text-gray-700">1.1.2</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="lottieGrid" class="grid gap-6" style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));"></div>
+    <div id="lottiePagination" class="flex items-center justify-center gap-2 mt-10 mb-4"></div>
+  </main>
+</div>
+
+<!-- Preview Modal -->
+<div id="previewModal" class="modal-overlay fixed inset-0 bg-black/60 items-center justify-center z-[2000]">
+  <div class="bg-white rounded-2xl p-8 w-[560px] max-w-[90%] shadow-2xl">
+    <div class="flex justify-between items-center mb-6">
+      <h3 id="previewTitle" class="text-xl font-semibold"></h3>
+      <button id="closePreviewBtn" class="text-gray-500 hover:text-gray-900 transition">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div id="previewAnimation" class="w-full h-72 flex items-center justify-center mb-10"></div>
+    <div class="flex justify-center gap-6">
+      <button id="btnDownloadGif" class="border border-alfa-red text-gray-800 px-8 py-3 rounded-lg font-semibold text-sm hover:bg-alfa-red hover:text-white transition">Download GIF</button>
+      <button id="btnDownloadJson" class="border border-alfa-red text-gray-800 px-8 py-3 rounded-lg font-semibold text-sm hover:bg-alfa-red hover:text-white transition">Download JSON</button>
+    </div>
+  </div>
+</div>
+
+<!-- Success Modal -->
+<div id="successModal" class="modal-overlay fixed inset-0 bg-black/50 items-center justify-center z-[2000]">
+  <div class="bg-white rounded-2xl p-10 w-96 text-center shadow-2xl">
+    <svg class="w-14 h-14 mx-auto mb-4" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+    </svg>
+    <h2 class="text-xl font-bold mb-2">All Yours!</h2>
+    <p class="text-sm text-gray-500 mb-6">Your new asset is ready. ✨</p>
+    <button id="modalOkBtn" class="bg-alfa-blue text-white px-8 py-2.5 rounded-lg font-semibold text-sm hover:bg-blue-800 transition">OK</button>
+  </div>
+</div>
+
+<button id="backToTop"
+  class="fixed bottom-10 right-10 w-11 h-11 rounded-full bg-gray-100 border border-gray-200 shadow-md flex items-center justify-center z-50 hover:bg-gray-200"
+  style="opacity:0; visibility:hidden; transform:translateY(16px); transition: all 0.3s ease;">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+    <path d="M12 19V5M5 12l7-7 7 7"/>
+  </svg>
+</button>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const LOTTIE_BASE_URL = "{{ url_for('static', filename='assets/Lottie/') }}";
+</script>
+<script src="{{ url_for('static', filename='js/lottie.js') }}"></script>
+{% endblock %}

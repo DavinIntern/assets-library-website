@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+{% block title %}Alfamart Asset Library - Illustrations{% endblock %}
+
+{% block head %}
+<style>
+  :root { --icon-color: #e82e2d; }
+  .version-menu { display: none; }
+  .version-menu.active { display: block; }
+  .category-item.active { font-weight: 600; color: #111827; }
+  .sidebar-transition { transition: width 0.3s ease; }
+  .modal-overlay { display: none; }
+  .modal-overlay.show { display: flex; }
+
+  /* ---- Color Picker Popup ---- */
+  #colorPickerPopup {
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 280px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.18);
+    z-index: 300;
+    overflow: hidden;
+  }
+  #colorPickerPopup.open { display: block; }
+  #sbCanvas { width: 100%; height: 180px; cursor: crosshair; display: block; }
+  #sbThumb {
+    position: absolute;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1.5px rgba(0,0,0,0.5);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  #hueSlider {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 14px;
+    border-radius: 7px; outline: none; cursor: pointer;
+    background: linear-gradient(to right,
+      #ff0000,#ff0080,#ff00ff,#8000ff,#0000ff,#0080ff,
+      #00ffff,#00ff80,#00ff00,#80ff00,#ffff00,#ff8000,#ff0000);
+  }
+  #hueSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: white; border: 2px solid rgba(0,0,0,0.3);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3); cursor: pointer;
+  }
+  #hueSlider::-moz-range-thumb {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: white; border: 2px solid rgba(0,0,0,0.3); cursor: pointer;
+  }
+  .rgb-input {
+    width: 100%; border: 1px solid #e5e7eb; border-radius: 8px;
+    padding: 8px 4px; text-align: center; font-size: 15px;
+    font-weight: 500; outline: none; transition: border-color 0.2s;
+  }
+  .rgb-input:focus { border-color: #9ca3af; }
+  .rgb-input::-webkit-outer-spin-button,
+  .rgb-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .rgb-input[type=number] { -moz-appearance: textfield; }
+</style>
+{% endblock %}
+
+{% block navbar_extras %}
+<div class="relative" id="colorPickerWrapper">
+  <button id="colorPickerBtn"
+    class="w-9 h-9 rounded-md border border-gray-300 cursor-pointer hover:ring-2 hover:ring-offset-1 hover:ring-gray-400 transition"
+    style="background-color: #e82e2d;" title="Pick illustration color">
+  </button>
+
+  <div id="colorPickerPopup">
+    <div class="relative" id="sbCanvasWrapper">
+      <canvas id="sbCanvas" width="280" height="180"></canvas>
+      <div id="sbThumb" style="top:10%;left:90%;"></div>
+    </div>
+    <div class="p-4 flex flex-col gap-4">
+      <div class="flex items-center gap-3">
+        <button id="eyedropperBtn" class="text-gray-600 hover:text-gray-900 transition shrink-0" title="Eyedropper">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.71 5.63l-2.34-2.34a1 1 0 0 0-1.41 0l-3.12 3.12-1.41-1.42-1.42 1.42 1.41 1.41-6.6 6.6A2 2 0 0 0 5 16v3h3a2 2 0 0 0 1.42-.59l6.6-6.6 1.41 1.42 1.42-1.42-1.42-1.41 3.12-3.12a1 1 0 0 0 0-1.65z"/>
+          </svg>
+        </button>
+        <div id="colorPreviewCircle"
+          class="w-12 h-12 rounded-full border-2 border-gray-200 shrink-0"
+          style="background-color:#e82e2d;">
+        </div>
+        <input type="range" id="hueSlider" min="0" max="360" value="0" class="flex-1">
+      </div>
+      <div class="grid grid-cols-4 gap-2 items-end">
+        <div class="flex flex-col items-center gap-1">
+          <input type="number" id="rInput" class="rgb-input" min="0" max="255" value="232">
+          <span class="text-xs text-gray-500 font-medium">R</span>
+        </div>
+        <div class="flex flex-col items-center gap-1">
+          <input type="number" id="gInput" class="rgb-input" min="0" max="255" value="46">
+          <span class="text-xs text-gray-500 font-medium">G</span>
+        </div>
+        <div class="flex flex-col items-center gap-1">
+          <input type="number" id="bInput" class="rgb-input" min="0" max="255" value="45">
+          <span class="text-xs text-gray-500 font-medium">B</span>
+        </div>
+        <div class="flex flex-col items-center gap-1">
+          <button class="rgb-input flex items-center justify-center h-[42px] text-gray-400 hover:text-gray-700 transition">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M8 9l4-4 4 4M16 15l-4 4-4-4"/>
+            </svg>
+          </button>
+          <span class="text-xs text-gray-500">&nbsp;</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="flex" style="min-height: calc(100vh - 73px);">
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar"
+    class="sidebar-transition w-[220px] shrink-0 bg-white border-r border-gray-200 sticky top-[73px] self-start overflow-y-auto"
+    style="height: calc(100vh - 73px);">
+
+    <div id="sidebarHeader" class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+      <div class="flex items-center gap-2 text-sm font-semibold text-gray-800">
+        <i class="fa-regular fa-image text-gray-600"></i>
+        <span>Illustration Packs</span>
+      </div>
+      <button id="closeSidebarBtn" class="text-gray-400 hover:text-gray-700 transition p-1 rounded hover:bg-gray-100">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+      </button>
+    </div>
+
+    <div id="sidebarHeaderCollapsed" class="hidden flex-col items-center py-4">
+      <button id="openSidebarBtn" class="text-gray-500 hover:text-gray-800 transition p-2 rounded hover:bg-gray-100">
+        <i class="fa-regular fa-image text-lg"></i>
+      </button>
+    </div>
+
+    <ul id="categoryList" class="py-3 px-3 flex flex-col gap-0.5">
+      <li class="category-item px-3 py-2 text-sm text-gray-500 rounded-md cursor-pointer hover:bg-gray-50 hover:text-gray-900 transition" data-category="Corporate Affair">Corporate Affair</li>
+      <li class="category-item px-3 py-2 text-sm text-gray-500 rounded-md cursor-pointer hover:bg-gray-50 hover:text-gray-900 transition" data-category="Finance & Corporate Secretary">Finance & Corporate Secretary</li>
+      <li class="category-item px-3 py-2 text-sm text-gray-500 rounded-md cursor-pointer hover:bg-gray-50 hover:text-gray-900 transition" data-category="Franchise & Investor Relation">Franchise & Investor Relation</li>
+      <li class="category-item px-3 py-2 text-sm text-gray-500 rounded-md cursor-pointer hover:bg-gray-50 hover:text-gray-900 transition" data-category="Human Capital">Human Capital</li>
+      <li class="category-item px-3 py-2 text-sm text-gray-500 rounded-md cursor-pointer hover:bg-gray-50 hover:text-gray-900 transition" data-category="Information Technology">Information Technology</li>
+      <li class="category-item px-3 py-2 text-sm text-gray-500 rounded-md cursor-pointer hover:bg-gray-50 hover:text-gray-900 transition" data-category="Logistic">Logistic</li>
+      <li class="category-item px-3 py-2 text-sm text-gray-500 rounded-md cursor-pointer hover:bg-gray-50 hover:text-gray-900 transition" data-category="Marketing">Marketing</li>
+      <li class="category-item px-3 py-2 text-sm text-gray-500 rounded-md cursor-pointer hover:bg-gray-50 hover:text-gray-900 transition" data-category="Merchandising">Merchandising</li>
+      <li class="category-item px-3 py-2 text-sm text-gray-500 rounded-md cursor-pointer hover:bg-gray-50 hover:text-gray-900 transition" data-category="Operation">Operation</li>
+      <li class="category-item px-3 py-2 text-sm text-gray-500 rounded-md cursor-pointer hover:bg-gray-50 hover:text-gray-900 transition" data-category="Procurement">Procurement</li>
+      <li class="category-item px-3 py-2 text-sm text-gray-500 rounded-md cursor-pointer hover:bg-gray-50 hover:text-gray-900 transition" data-category="Property & SMB Development">Property & SMB Development</li>
+    </ul>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 px-8 py-8">
+    <div class="relative mb-8">
+      <svg class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none"
+        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input id="searchBar" type="text" placeholder="Search illustrations"
+        value="{{ search }}"
+        class="w-full pl-11 pr-5 py-3 border border-gray-200 rounded-full text-sm outline-none focus:border-gray-400 bg-white transition">
+    </div>
+
+    <div class="flex items-center justify-between mb-8">
+      <div class="flex items-center gap-3">
+        <h1 id="pageTitle" class="text-lg font-semibold text-gray-900">Result for Illustrations</h1>
+        <button id="btnReset" class="hidden text-xs px-3 py-1.5 border border-gray-300 rounded-full text-gray-600 hover:bg-gray-50 transition">Reset</button>
+      </div>
+      <div class="relative">
+        <button id="versionBtn" class="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-sm bg-white hover:bg-gray-50 transition text-gray-700">
+          1.1.1
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div id="versionMenu" class="version-menu absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-md z-10 min-w-full">
+          <div class="px-4 py-2.5 text-sm cursor-pointer hover:bg-gray-50 border-b border-gray-100 text-gray-700">1.1.1</div>
+          <div class="px-4 py-2.5 text-sm cursor-pointer hover:bg-gray-50 text-gray-700">1.1.2</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="illustrationGrid" class="grid gap-6" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));"></div>
+    <div id="illustrationPagination" class="flex items-center justify-center gap-2 mt-10 mb-4"></div>
+  </main>
+</div>
+
+<!-- Preview Modal -->
+<div id="previewModal" class="modal-overlay fixed inset-0 bg-black/60 items-center justify-center z-[2000]">
+  <div class="bg-white rounded-2xl p-8 w-[560px] max-w-[90%] shadow-2xl">
+    <div class="flex justify-between items-center mb-6">
+      <h3 id="previewTitle" class="text-xl font-semibold"></h3>
+      <button id="closePreviewBtn" class="text-gray-500 hover:text-gray-900 transition">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div id="previewImage" class="w-full h-60 flex items-center justify-center mb-10"></div>
+    <div class="flex justify-center gap-6">
+      <button id="btnDownloadSvg" class="border border-alfa-red text-gray-800 px-8 py-3 rounded-lg font-semibold text-sm hover:bg-alfa-red hover:text-white transition">Download SVG</button>
+      <button id="btnDownloadPng" class="border border-alfa-red text-gray-800 px-8 py-3 rounded-lg font-semibold text-sm hover:bg-alfa-red hover:text-white transition">Download PNG</button>
+    </div>
+  </div>
+</div>
+
+<!-- Success Modal -->
+<div id="successModal" class="modal-overlay fixed inset-0 bg-black/50 items-center justify-center z-[2000]">
+  <div class="bg-white rounded-2xl p-10 w-96 text-center shadow-2xl">
+    <svg class="w-14 h-14 mx-auto mb-4" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+    </svg>
+    <h2 class="text-xl font-bold mb-2">All Yours!</h2>
+    <p class="text-sm text-gray-500 mb-6">Your new asset is ready. ✨</p>
+    <button id="modalOkBtn" class="bg-alfa-blue text-white px-8 py-2.5 rounded-lg font-semibold text-sm hover:bg-blue-800 transition">OK</button>
+  </div>
+</div>
+
+<button id="backToTop"
+  class="fixed bottom-10 right-10 w-11 h-11 rounded-full bg-gray-100 border border-gray-200 shadow-md flex items-center justify-center z-50 hover:bg-gray-200"
+  style="opacity:0; visibility:hidden; transform:translateY(16px); transition: all 0.3s ease;">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+    <path d="M12 19V5M5 12l7-7 7 7"/>
+  </svg>
+</button>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const ILLS_BASE_URL = "{{ url_for('static', filename='assets/Illustrations/') }}";
+</script>
+<script src="{{ url_for('static', filename='js/illustration.js') }}"></script>
+{% endblock %}

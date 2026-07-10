@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Alfamart Design Assets - Templates{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="relative w-full h-80 flex items-center justify-center text-white text-center rounded-br-[200px] overflow-hidden mb-12"
+  style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('{{ url_for('static', filename='assets/Templates/bgm_img_template.png') }}'); background-size: cover; background-position: center; box-shadow: 0 20px 0 0 #FFC107;">
+  <div class="-translate-y-4">
+    <h1 class="text-3xl font-bold mb-2">Made by Us, For Us</h1>
+    <p class="text-base opacity-90">Our team's collective library of creative templates.</p>
+  </div>
+</section>
+
+<!-- Template Cards -->
+<section class="px-8 pb-16">
+  <div class="flex flex-wrap justify-center gap-8 max-w-[1080px] mx-auto">
+
+    <a href="{{ url_for('template_webapps') }}" class="bg-white w-80 rounded-2xl shadow-md hover:-translate-y-2 hover:shadow-xl transition-all duration-300 overflow-hidden">
+      <div class="h-48 overflow-hidden bg-gray-100">
+        <img src="{{ url_for('static', filename='assets/Templates/webapps.png') }}" alt="Web Applications" class="w-full h-full object-cover">
+      </div>
+      <div class="p-5">
+        <h3 class="text-lg font-semibold mb-1">Web Applications</h3>
+        <p class="text-sm text-gray-500">300+ templates</p>
+      </div>
+    </a>
+
+    <a href="#" class="bg-white w-80 rounded-2xl shadow-md hover:-translate-y-2 hover:shadow-xl transition-all duration-300 overflow-hidden">
+      <div class="h-48 overflow-hidden bg-gray-100">
+        <img src="{{ url_for('static', filename='assets/Templates/mobileapps.png') }}" alt="Mobile Applications" class="w-full h-full object-cover">
+      </div>
+      <div class="p-5">
+        <h3 class="text-lg font-semibold mb-1">Mobile Applications</h3>
+        <p class="text-sm text-gray-500">300+ templates</p>
+      </div>
+    </a>
+
+    <a href="#" class="bg-white w-80 rounded-2xl shadow-md hover:-translate-y-2 hover:shadow-xl transition-all duration-300 overflow-hidden">
+      <div class="h-48 overflow-hidden bg-gray-100">
+        <img src="{{ url_for('static', filename='assets/Templates/webnlanding.png') }}" alt="Websites & Landing Pages" class="w-full h-full object-cover">
+      </div>
+      <div class="p-5">
+        <h3 class="text-lg font-semibold mb-1">Websites & Landing Pages</h3>
+        <p class="text-sm text-gray-500">300+ templates</p>
+      </div>
+    </a>
+
+    <a href="#" class="bg-white w-80 rounded-2xl shadow-md hover:-translate-y-2 hover:shadow-xl transition-all duration-300 overflow-hidden">
+      <div class="h-48 overflow-hidden bg-gray-100">
+        <img src="{{ url_for('static', filename='assets/Templates/designsystem.png') }}" alt="Design System" class="w-full h-full object-cover">
+      </div>
+      <div class="p-5">
+        <h3 class="text-lg font-semibold mb-1">Design System & UI Kits</h3>
+        <p class="text-sm text-gray-500">300+ templates</p>
+      </div>
+    </a>
+
+    <a href="#" class="bg-white w-80 rounded-2xl shadow-md hover:-translate-y-2 hover:shadow-xl transition-all duration-300 overflow-hidden">
+      <div class="h-48 overflow-hidden bg-gray-100">
+        <img src="{{ url_for('static', filename='assets/Templates/emailtemplates.png') }}" alt="Email Templates" class="w-full h-full object-cover">
+      </div>
+      <div class="p-5">
+        <h3 class="text-lg font-semibold mb-1">Email Templates</h3>
+        <p class="text-sm text-gray-500">300+ templates</p>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- Design Process -->
+<section class="text-center px-8 pb-20">
+  <h2 class="text-2xl font-bold mb-14">Our Design Process</h2>
+  <div class="flex justify-center gap-10 flex-wrap max-w-4xl mx-auto">
+    {% set steps = [
+      ('assets/Icons/streamline-flex_health-care-2.svg', 'Empathize', "We start with 'who' and 'why'"),
+      ('assets/Icons/mdi_target.svg', 'Define', 'Focusing on the right problem to solve'),
+      ('assets/Icons/mdi_head-idea-outline.svg', 'Ideate', 'No bad ideas in a brainstorm'),
+      ('assets/Icons/lucide-lab_floor-plan.svg', 'Prototype', 'Making our ideas tangible'),
+      ('assets/Icons/file-icons_testcafe.svg', 'Test', 'Learn, validate, and iterate'),
+    ] %}
+    {% for icon, title, desc in steps %}
+    <div class="flex flex-col items-center min-w-[130px]">
+      <div class="w-16 h-16 bg-yellow-400 rounded-full flex items-center justify-center mb-5">
+        <img src="{{ url_for('static', filename=icon) }}" alt="{{ title }}" class="w-8 h-8 object-contain">
+      </div>
+      <h4 class="font-semibold text-sm mb-1">{{ title }}</h4>
+      <p class="text-xs text-gray-500 leading-relaxed max-w-[140px]">{{ desc }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}{{ detail.title }} - Alfamart Templates{% endblock %}
+
+{% block head %}
+<style>
+  .tag-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border: 1px solid #e5e7eb;
+    border-radius: 999px; font-size: 13px; color: #374151;
+    background: #fff; cursor: default;
+  }
+  .attr-row {
+    display: grid; grid-template-columns: 200px 1fr; gap: 8px;
+    padding: 10px 0; border-bottom: 1px solid #f3f4f6;
+  }
+  .attr-row:last-child { border-bottom: none; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="px-8 py-8">
+
+  <!-- Back -->
+  <a href="{{ url_for('template_webapps') }}" class="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 mb-6 transition">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Back to Templates
+  </a>
+
+  <!-- Two-column layout -->
+  <div class="flex gap-10 items-start">
+
+    <!-- LEFT: image + description + tags (scrollable) -->
+    <div class="flex-1 min-w-0">
+
+      <!-- Cover Image -->
+      <div class="rounded-xl overflow-hidden border border-gray-100 shadow-sm bg-gray-50 mb-8">
+        <img src="{{ url_for('static', filename='assets/Templates/' + detail.image) }}"
+             alt="{{ detail.title }}" class="w-full object-cover">
+      </div>
+
+      <!-- Description -->
+      <h2 class="text-base font-semibold text-gray-900 mb-4">Description</h2>
+
+      <p class="text-sm font-semibold text-gray-800 mb-2">{{ detail.description }}</p>
+      <p class="text-sm text-gray-600 mb-5 leading-relaxed">{{ detail.description_body }}</p>
+
+      <p class="text-sm font-semibold text-gray-800 mb-2">Features:</p>
+      <ul class="text-sm text-gray-600 mb-5 space-y-1">
+        {% for f in detail.features %}
+        <li class="flex items-start gap-2"><span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-gray-400 shrink-0"></span>{{ f }}</li>
+        {% endfor %}
+      </ul>
+
+      <p class="text-sm font-semibold text-gray-800 mb-2">What you get:</p>
+      <ul class="text-sm text-gray-600 mb-8 space-y-1">
+        {% for w in detail.what_you_get %}
+        <li class="flex items-start gap-2"><span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-gray-400 shrink-0"></span>{{ w }}</li>
+        {% endfor %}
+      </ul>
+
+      <p class="text-sm font-semibold text-gray-800 mb-3">Item Tags</p>
+      <div class="flex flex-wrap gap-2 pb-16">
+        {% for tag in detail.tags %}
+        <span class="tag-pill">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          {{ tag }}
+        </span>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- RIGHT: title + attributes + download (sticky) -->
+    <div class="w-[400px] shrink-0 sticky top-[89px] self-start">
+      <h1 class="text-2xl font-bold text-gray-900 mb-1">{{ detail.title }}</h1>
+      <p class="text-sm text-gray-500 mb-6">by {{ detail.author }}</p>
+
+      <!-- Attributes -->
+      <div class="mb-6">
+        <p class="text-sm font-semibold text-gray-700 mb-3">Attributes</p>
+        <div class="attr-row">
+          <span class="text-sm text-gray-500">Applications Supported</span>
+          <span class="text-sm text-gray-900">{{ detail.applications }}</span>
+        </div>
+        <div class="attr-row">
+          <span class="text-sm text-gray-500">File Types</span>
+          <span class="text-sm text-gray-900">{{ detail.file_types }}</span>
+        </div>
+        <div class="attr-row">
+          <span class="text-sm text-gray-500">Additions</span>
+          <span class="text-sm text-gray-900 whitespace-pre-line">{{ detail.additions }}</span>
+        </div>
+        <div class="attr-row">
+          <span class="text-sm text-gray-500">Color Space</span>
+          <span class="text-sm text-gray-900">{{ detail.color_space }}</span>
+        </div>
+        <div class="attr-row">
+          <span class="text-sm text-gray-500">Commercial License</span>
+          <span class="text-sm text-gray-900">{{ detail.commercial_license }}</span>
+        </div>
+      </div>
+
+      <!-- Download Button -->
+      <button class="w-full flex items-center justify-center gap-2 bg-alfa-red text-white py-3 rounded-lg font-medium text-sm hover:bg-red-700 transition">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download
+      </button>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

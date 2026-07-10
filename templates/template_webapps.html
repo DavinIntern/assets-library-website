@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Web Applications - Alfamart Templates{% endblock %}
+
+{% block head %}
+<style>
+  .filter-track { scrollbar-width: none; -ms-overflow-style: none; }
+  .filter-track::-webkit-scrollbar { display: none; }
+  .sidebar-category { height: calc(100vh - 73px); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="flex min-h-[calc(100vh-73px)]">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar-category w-[260px] border-r border-gray-100 flex flex-col gap-1 p-6 shrink-0 sticky top-[73px] overflow-y-auto">
+    {% set cats = [
+      ('Web Applications', 'fa-globe', url_for('template_webapps')),
+      ('Mobile Applications', 'fa-mobile-screen', '#'),
+      ('Websites & Landing Pages', 'fa-desktop', '#'),
+      ('Design System & UI Kits', 'fa-layer-group', '#'),
+      ('Email Templates', 'fa-envelope', '#'),
+    ] %}
+    {% for name, icon, link in cats %}
+    <a href="{{ link }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition
+      {% if request.endpoint == 'template_webapps' and name == 'Web Applications' %}bg-alfa-red text-white shadow-md{% else %}text-gray-700 hover:bg-gray-50{% endif %}">
+      <i class="fa-solid {{ icon }} w-5 text-center"></i>
+      {{ name }}
+    </a>
+    {% endfor %}
+  </aside>
+
+  <!-- MAIN -->
+  <main class="flex-1 px-8 py-8 overflow-hidden">
+    <h1 class="text-2xl font-semibold mb-5">Web Applications Templates</h1>
+
+    <!-- Filter Pills -->
+    <div class="mb-8">
+      <div id="filterTrack" class="flex gap-3 overflow-x-auto pb-2 cursor-grab select-none">
+        {% set filters = ['onboarding', 'login', 'profiles', 'booking', 'checkout', 'search', 'data'] %}
+        {% set labels = ['Onboarding', 'Login & Authentication', 'User Profiles & Settings', 'Booking & Scheduling', 'Checkout Process', 'Search & Results', 'Data Visualization'] %}
+        {% for f, l in zip(filters, labels) %}
+        <button class="filter-pill flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-500 rounded-full text-sm font-medium whitespace-nowrap border border-transparent hover:bg-gray-200 transition" data-filter="{{ f }}">
+          <i class="fa-solid fa-magnifying-glass text-xs"></i> {{ l }}
+        </button>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Template Grid -->
+    <div class="grid grid-cols-3 gap-6 pb-16">
+      {% set items = [
+        ('premiumproduct.png', 'Premium Product - Landing Page', 'davinryan123', 'onboarding'),
+        ('sosmedmockup.png', 'High Quality Social Media Instagram Mockup', 'davinryan123', 'login'),
+        ('highfidUI.png', 'High Fidelity Wireframe UI UX Kit iOS Android App', 'davinryan123', 'profiles'),
+        ('premiumproduct.png', 'Premium Product - Landing Page', 'davinryan123', 'booking'),
+        ('sosmedmockup.png', 'High Quality Social Media Instagram Mockup', 'davinryan123', 'checkout'),
+        ('highfidUI.png', 'High Fidelity Wireframe UI UX Kit iOS Android App', 'davinryan123', 'search'),
+        ('premiumproduct.png', 'Premium Product - Landing Page', 'davinryan123', 'data'),
+        ('sosmedmockup.png', 'High Quality Social Media Instagram Mockup', 'davinryan123', 'login'),
+        ('highfidUI.png', 'High Fidelity Wireframe UI UX Kit iOS Android App', 'davinryan123', 'checkout'),
+        ('premiumproduct.png', 'Premium Product - Landing Page', 'davinryan123', 'onboarding'),
+        ('sosmedmockup.png', 'High Quality Social Media Instagram Mockup', 'davinryan123', 'booking'),
+        ('highfidUI.png', 'High Fidelity Wireframe UI UX Kit iOS Android App', 'davinryan123', 'search'),
+      ] %}
+      {% set slug_map = {
+        'premiumproduct.png': 'premium-product-landing-page',
+        'sosmedmockup.png': 'high-quality-social-media-instagram-mockup',
+        'highfidUI.png': 'high-fidelity-wireframe-ui-ux-kit',
+      } %}
+      {% for img, title, author, cat in items %}
+      <a href="{{ url_for('template_detail', slug=slug_map[img]) }}" class="t-item-card group relative rounded-xl overflow-hidden bg-gray-100 aspect-[4/3] shadow-sm block" data-category="{{ cat }}">
+        <img src="{{ url_for('static', filename='assets/Templates/' + img) }}" alt="{{ title }}" class="w-full h-full object-cover block">
+        <div class="absolute inset-0 bg-black/65 text-white flex flex-col justify-between p-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div>
+            <h4 class="font-semibold text-sm leading-snug mb-1">{{ title }}</h4>
+            <p class="text-xs opacity-75">by {{ author }}</p>
+          </div>
+          <div class="flex justify-end gap-3">
+            <button class="w-9 h-9 flex items-center justify-center border border-white/30 rounded-md hover:bg-white/20 transition text-lg"><i class="fa-solid fa-download"></i></button>
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </main>
+</div>
+
+<!-- Back to Top -->
+<button id="backToTop" class="fixed bottom-10 right-10 w-12 h-12 rounded-full bg-white border border-gray-200 shadow flex items-center justify-center opacity-0 invisible translate-y-5 transition-all duration-300 z-50 hover:bg-gray-100">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/template_webapps.js') }}"></script>
+{% endblock %}

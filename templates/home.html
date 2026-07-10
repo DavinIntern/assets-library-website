@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}Alfamart Design Assets - Home{% endblock %}
+
+{% block head %}
+<style>
+  .card-hover-desc { max-height: 0; opacity: 0; overflow: hidden; transition: all 0.4s ease; }
+  .group:hover .card-hover-desc { max-height: 100px; opacity: 1; }
+  .group:hover .card-title { transform: translateY(0); margin-bottom: 8px; }
+  .card-title { transform: translateY(16px); transition: all 0.4s ease; }
+  .dropdown-options { display: none; }
+  .dropdown-options.show { display: block; }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- HERO -->
+<section class="flex justify-between items-center px-8 py-16 gap-10">
+  <div class="flex-1 max-w-2xl">
+    <h1 class="text-5xl font-bold leading-tight text-gray-900 mb-5">Discover Our<br>Design Assets!</h1>
+    <p class="text-gray-500 mb-8 leading-relaxed">The central library for icons, illustrations, lottie, and templates. Built to help you design faster and consistent products.</p>
+
+    <!-- Search Bar -->
+    <div class="flex items-center bg-gray-100 rounded-lg p-1 mb-8 relative">
+      <div class="relative cursor-pointer border-r border-gray-300 min-w-[140px]" id="categoryDropdown">
+        <div class="flex items-center justify-between px-4 py-3 text-sm font-semibold gap-3 select-none">
+          <span id="selectedText">Icons</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <ul class="dropdown-options absolute top-full left-0 w-full bg-white border border-gray-100 rounded-lg shadow-lg z-10 mt-1" id="dropdownOptions">
+          <li data-value="Icons" class="px-4 py-2 text-sm hover:bg-gray-50 cursor-pointer">Icons</li>
+          <li data-value="Illustrations" class="px-4 py-2 text-sm hover:bg-gray-50 cursor-pointer">Illustrations</li>
+          <li data-value="Lottie" class="px-4 py-2 text-sm hover:bg-gray-50 cursor-pointer">Lottie</li>
+          <li data-value="Templates" class="px-4 py-2 text-sm hover:bg-gray-50 cursor-pointer">Templates</li>
+        </ul>
+      </div>
+      <input id="searchInput" type="text" placeholder="Search your icons..."
+        class="flex-1 bg-transparent border-none outline-none px-4 py-3 text-sm">
+      <button id="searchBtn" class="px-4 py-2">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+    </div>
+
+    <!-- CDN Buttons -->
+    <div class="flex gap-4">
+      <button id="copyCssBtn" class="flex items-center gap-2 px-5 py-3 border border-alfa-red text-gray-800 rounded-md text-sm font-medium hover:bg-red-50 transition">
+        <i class="fa-regular fa-copy"></i> Copy CDN for CSS
+      </button>
+      <button id="copyJsBtn" class="flex items-center gap-2 px-5 py-3 border border-alfa-red text-gray-800 rounded-md text-sm font-medium hover:bg-red-50 transition">
+        <i class="fa-regular fa-copy"></i> Copy CDN for JS
+      </button>
+    </div>
+  </div>
+
+  <!-- Hero Grid -->
+  <div class="grid grid-cols-3 justify-items-center -translate-x-16" style="gap: 8px;">
+    <img src="{{ url_for('static', filename='assets/Home/about-our-team.svg') }}" class="w-44 h-36 object-contain hover:scale-105 transition-transform" alt="">
+    <img src="{{ url_for('static', filename='assets/Home/conversation-businessman-customer.svg') }}" class="w-44 h-36 object-contain hover:scale-105 transition-transform" alt="">
+    <img src="{{ url_for('static', filename='assets/Home/facetime-meeting.svg') }}" class="w-44 h-36 object-contain hover:scale-105 transition-transform" alt="">
+    <img src="{{ url_for('static', filename='assets/Home/smart-people.svg') }}" class="w-44 h-36 object-contain hover:scale-105 transition-transform" alt="">
+    <img src="{{ url_for('static', filename='assets/Home/business-presentation.svg') }}" class="w-44 h-36 object-contain hover:scale-105 transition-transform" alt="">
+    <img src="{{ url_for('static', filename='assets/Home/walk-together.svg') }}" class="w-44 h-36 object-contain hover:scale-105 transition-transform" alt="">
+  </div>
+</section>
+
+<!-- CATEGORY CARDS -->
+<section class="px-8 pb-20 grid grid-cols-2 lg:grid-cols-4 gap-6">
+
+  <a href="{{ url_for('icon') }}" class="group relative h-80 rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:-translate-y-1 transition-transform block"
+    style="background-image: url('{{ url_for('static', filename='assets/icon_card.svg') }}'); background-size: cover; background-position: center;">
+    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+    <div class="absolute bottom-0 left-0 p-6 text-white">
+      <h3 class="card-title text-2xl font-bold">Icon</h3>
+      <p class="card-hover-desc text-sm leading-relaxed">Find, copy, and use. Speed up your workflow with a collection of ready-to-use icons.</p>
+    </div>
+  </a>
+
+  <a href="{{ url_for('illustration') }}" class="group relative h-80 rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:-translate-y-1 transition-transform block"
+    style="background-image: url('{{ url_for('static', filename='assets/illustration_card.svg') }}'); background-size: cover; background-position: center;">
+    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+    <div class="absolute bottom-0 left-0 p-6 text-white">
+      <h3 class="card-title text-2xl font-bold">Illustrations</h3>
+      <p class="card-hover-desc text-sm leading-relaxed">Perfect for landing pages, onboarding screens, or social media content.</p>
+    </div>
+  </a>
+
+  <a href="{{ url_for('lottie') }}" class="group relative h-80 rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:-translate-y-1 transition-transform block"
+    style="background-image: url('{{ url_for('static', filename='assets/lottie_card.svg') }}'); background-size: cover; background-position: center;">
+    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+    <div class="absolute bottom-0 left-0 p-6 text-white">
+      <h3 class="card-title text-2xl font-bold">Lottie</h3>
+      <p class="card-hover-desc text-sm leading-relaxed">Elevate your UI with motion. Vector-based, sharp at any size.</p>
+    </div>
+  </a>
+
+  <a href="{{ url_for('template') }}" class="group relative h-80 rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:-translate-y-1 transition-transform block"
+    style="background-image: url('{{ url_for('static', filename='assets/template_card.svg') }}'); background-size: cover; background-position: center;">
+    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+    <div class="absolute bottom-0 left-0 p-6 text-white">
+      <h3 class="card-title text-2xl font-bold">Templates</h3>
+      <p class="card-hover-desc text-sm leading-relaxed">Handpicked assets designed to work harmoniously for a consistent result.</p>
+    </div>
+  </a>
+
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/home.js') }}"></script>
+{% endblock %}

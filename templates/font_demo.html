@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alfa Icons - Web Font + CSS Demo</title>
+  <link rel="stylesheet" href="/dist/alfa-icons.css">
+  <style>
+    @font-face {
+      font-family: 'AlfaIcons';
+      src: url('/dist/alfa-icons.woff2') format('woff2');
+      font-weight: normal;
+      font-style: normal;
+      font-display: block;
+    }
+    body { font-family: sans-serif; padding: 2rem; background: #f9f9f9; }
+    h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    p { color: #555; margin-bottom: 1.5rem; }
+    code { display: block; background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 8px; margin-bottom: 2rem; font-size: 13px; white-space: pre; }
+    .grid { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+    .item { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 90px; }
+    .item span { font-size: 11px; color: #888; text-align: center; word-break: break-all; }
+    .icon-lg { font-size: 32px; }
+  </style>
+</head>
+<body>
+  <h1>Alfamart Icons — Web Font + CSS</h1>
+  <p>Sama seperti FontAwesome CSS approach. Satu link tag, langsung bisa pakai.</p>
+
+  <code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DavinIntern/assets-library-website@1.1.0/dist/alfa-icons.css"&gt;
+
+&lt;!-- Pakai icon --&gt;
+&lt;i class="alfa mdi-check"&gt;&lt;/i&gt;
+&lt;i class="alfa mdi-check" style="font-size: 32px; color: green;"&gt;&lt;/i&gt;</code>
+
+  <div class="grid">
+    <div class="item"><i class="alfa mdi-check icon-lg" style="color:green;"></i><span>mdi_check</span></div>
+    <div class="item"><i class="alfa mdi-close icon-lg" style="color:red;"></i><span>mdi_close</span></div>
+    <div class="item"><i class="alfa mdi-account icon-lg"></i><span>mdi_account</span></div>
+    <div class="item"><i class="alfa mdi-bell icon-lg"></i><span>mdi_bell</span></div>
+    <div class="item"><i class="alfa mdi-heart icon-lg" style="color:#e53935;"></i><span>mdi_heart</span></div>
+    <div class="item"><i class="alfa mdi-pencil icon-lg" style="color:#1976d2;"></i><span>mdi_pencil</span></div>
+    <div class="item"><i class="alfa mdi-trash-can icon-lg" style="color:#e53935;"></i><span>mdi_trash-can</span></div>
+    <div class="item"><i class="alfa mdi-information icon-lg" style="color:#0288d1;"></i><span>mdi_information</span></div>
+    <div class="item"><i class="alfa material-symbols-search icon-lg"></i><span>material-symbols_search</span></div>
+    <div class="item"><i class="alfa material-symbols-star-rounded icon-lg" style="color:#f9a825;"></i><span>material-symbols_star-rounded</span></div>
+  </div>
+
+  <br><br>
+  <p style="font-size:13px;">Ukuran via <code style="display:inline;padding:2px 6px;">font-size</code>, warna via <code style="display:inline;padding:2px 6px;">color</code></p>
+</body>
+</html>

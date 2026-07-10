@@ -49,6 +49,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  setupCopy('copyCssBtn', '.alfa-icon { display: inline-flex; align-items: center; } .alfa-icon svg path { fill: currentColor; }');
+  setupCopy('copyCssBtn', '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DavinIntern/assets-library-website@1.0.0/dist/assets.css">');
   setupCopy('copyJsBtn', '<script src="https://cdn.jsdelivr.net/gh/DavinIntern/assets-library-website@1.0.0/dist/assets.js"><\/script>');
 });

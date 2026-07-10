@@ -1,0 +1,21 @@
+/*!
+ * Alfamart Design Assets CDN v1.0.0 - CSS
+ * Usage: <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DavinIntern/assets-library-website@1.0.0/dist/assets.css">
+ */
+.alfa-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  line-height: 1;
+}
+.alfa-icon svg {
+  display: block;
+}
+.alfa-icon svg path,
+.alfa-icon svg rect,
+.alfa-icon svg circle,
+.alfa-icon svg polygon,
+.alfa-icon svg ellipse {
+  fill: currentColor;
+}

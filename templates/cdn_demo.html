@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alfa Icons CDN Demo</title>
+  <script src="/dist/assets.js"></script>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; background: #f9f9f9; }
+    h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    p { color: #555; margin-bottom: 2rem; }
+    .grid { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+    .item { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 80px; }
+    .item span { font-size: 11px; color: #888; text-align: center; word-break: break-all; }
+    code { display: block; background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 8px; margin-bottom: 2rem; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <h1>Alfamart Icons CDN</h1>
+  <p>Embed sekali, pakai di mana saja.</p>
+
+  <code>&lt;script src="https://cdn.jsdelivr.net/gh/DavinIntern/assets-library-website@1.2.0/dist/assets.js"&gt;&lt;/script&gt;
+
+&lt;!-- Pakai icon --&gt;
+&lt;i class="alfa-icon" data-icon="mdi_check" style="font-size: 32px;"&gt;&lt;/i&gt;
+&lt;i class="alfa-icon" data-icon="mdi_check" style="font-size: 32px; color: red;"&gt;&lt;/i&gt;</code>
+&lt;i class="alfa-icon" data-icon="mdi_check"&gt;&lt;/i&gt;
+&lt;i class="alfa-icon" data-icon="mdi_check" data-size="32" style="color: red;"&gt;&lt;/i&gt;</code>
+
+  <div class="grid">
+    <div class="item"><i class="alfa-icon" data-icon="mdi_check" data-size="32"></i><span>mdi_check</span></div>
+    <div class="item"><i class="alfa-icon" data-icon="mdi_close" data-size="32"></i><span>mdi_close</span></div>
+    <div class="item"><i class="alfa-icon" data-icon="mdi_account" data-size="32"></i><span>mdi_account</span></div>
+    <div class="item"><i class="alfa-icon" data-icon="mdi_bell" data-size="32"></i><span>mdi_bell</span></div>
+    <div class="item"><i class="alfa-icon" data-icon="mdi_heart" data-size="32"></i><span>mdi_heart</span></div>
+    <div class="item"><i class="alfa-icon" data-icon="mdi_star-rounded" data-size="32" style="color:#e53935;"></i><span>mdi_star-rounded</span></div>
+    <div class="item"><i class="alfa-icon" data-icon="material-symbols_search" data-size="32"></i><span>material-symbols_search</span></div>
+    <div class="item"><i class="alfa-icon" data-icon="mdi_trash-can" data-size="32" style="color:#e53935;"></i><span>mdi_trash-can</span></div>
+    <div class="item"><i class="alfa-icon" data-icon="mdi_pencil" data-size="32" style="color:#1976d2;"></i><span>mdi_pencil</span></div>
+    <div class="item"><i class="alfa-icon" data-icon="mdi_information" data-size="32" style="color:#0288d1;"></i><span>mdi_information</span></div>
+  </div>
+
+  <br><br>
+  <p style="font-size:13px; color:#aaa;">
+    Total icons tersedia: <strong id="count"></strong>
+  </p>
+  <script>
+    document.getElementById('count').textContent = window.AlfaIcons.list().length;
+  </script>
+</body>
+</html>

@@ -42,13 +42,13 @@ document.addEventListener('DOMContentLoaded', function () {
       const orig = btn.innerHTML;
       btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Copied!';
       btn.classList.add('text-green-600', 'border-green-500');
-      seatTimeout(() => {
+      setTimeout(() => {
         btn.innerHTML = orig;
         btn.classList.remove('text-green-600', 'border-green-500');
       }, 3000);
     });
   }
 
-  setupCopy('copyCssBtn', '<link rel="stylesheet" href="https://cdn.alfamart.com/assets.css">');
-  setupCopy('copyJsBtn', '<script src="https://cdn.alfamart.com/assets.js"><\/script>');
+  setupCopy('copyCssBtn', '.alfa-icon { display: inline-flex; align-items: center; } .alfa-icon svg path { fill: currentColor; }');
+  setupCopy('copyJsBtn', '<script src="https://cdn.jsdelivr.net/gh/DavinIntern/assets-library-website@1.0.0/dist/assets.js"><\/script>');
 });
